@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { ScrollArea } from './ui/scroll-area'
+import { ScrollArea, ScrollBar } from './ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
 import { CompoundInterestChart } from './compound-interest-chart'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
@@ -190,6 +190,7 @@ export function InterestResult({
                   ))}
                 </TableBody>
               </Table>
+              <ScrollBar orientation="horizontal" />
             </ScrollArea>
           </TabsContent>
         </Tabs>
