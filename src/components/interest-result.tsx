@@ -1,5 +1,6 @@
 'use client'
 
+import { z } from 'zod'
 import {
   Table,
   TableBody,
@@ -8,12 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { ScrollArea, ScrollBar } from './ui/scroll-area'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
+import type { CompoundInterestMonth } from '@/types'
 import { CompoundInterestChart } from './compound-interest-chart'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { CompoundInterestMonth } from '@/types'
-import { z } from 'zod'
+import { ScrollArea, ScrollBar } from './ui/scroll-area'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
 
 export function InterestResult({
   searchParams,

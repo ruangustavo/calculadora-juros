@@ -1,5 +1,5 @@
-import { FormCompoundInterestSimulator } from '@/components/form-compound-interest-simulator'
 import Image from 'next/image'
+import { FormCompoundInterestSimulator } from '@/components/form-compound-interest-simulator'
 import Logo from '../../public/logo.png'
 
 export default function Home() {

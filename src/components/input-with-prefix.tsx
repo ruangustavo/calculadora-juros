@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react'
+import type { ComponentProps } from 'react'
 import { Input } from './ui/input'
 
 interface InputWithPrefixProps extends ComponentProps<'input'> {

@@ -1,8 +1,8 @@
-import React, { ForwardedRef } from 'react'
-import { NumericFormat, NumericFormatProps } from 'react-number-format'
+import React, { type ForwardedRef } from 'react'
+import { type Control, Controller } from 'react-hook-form'
+import { NumericFormat, type NumericFormatProps } from 'react-number-format'
 import { Input } from '@/components/ui/input'
-import { Controller, Control } from 'react-hook-form'
-import { CompoundInterestSimulatorForm } from '@/types'
+import type { CompoundInterestSimulatorForm } from '@/types'
 
 interface BrazilianCurrencyInputProps
   extends Omit<NumericFormatProps, 'onValueChange' | 'value'> {

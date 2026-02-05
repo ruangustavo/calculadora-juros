@@ -1,5 +1,7 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+import { Controller, useForm } from 'react-hook-form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -9,12 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Controller, useForm } from 'react-hook-form'
+import type { CompoundInterestSimulatorForm } from '@/types'
+import BrazilianCurrencyInput from './brazilian-currency-input'
 import { Button } from './ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { CompoundInterestSimulatorForm } from '@/types'
-import { useRouter } from 'next/navigation'
-import BrazilianCurrencyInput from './brazilian-currency-input'
 
 export function FormCompoundInterestSimulator() {
   const router = useRouter()
