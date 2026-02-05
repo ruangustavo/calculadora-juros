@@ -14,11 +14,11 @@ import type { CompoundInterestMonth } from '@/types'
 const chartConfig = {
   balance: {
     label: 'Rendimento',
-    color: 'hsl(var(--chart-2))',
+    color: 'var(--color-chart-2)',
   },
   balanceWithoutInterest: {
     label: 'Saldo sem juros',
-    color: 'hsl(var(--chart-1))',
+    color: 'var(--color-chart-1)',
   },
 } satisfies ChartConfig
 
@@ -46,10 +46,7 @@ export function CompoundInterestChart({
               tickMargin={8}
               name="Mês"
             />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent isCurrency />}
-            />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Line
               dataKey="balance"
               type="monotone"

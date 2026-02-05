@@ -8,7 +8,7 @@ interface InputWithPrefixProps extends ComponentProps<'input'> {
 export function InputWithPrefix({ prefix, name }: InputWithPrefixProps) {
   return (
     <div className="flex">
-      <span className="w-12 bg-primary/10 flex items-center justify-center select-none">
+      <span className="flex w-12 select-none items-center justify-center bg-primary/10">
         {prefix}
       </span>
       <Input type="number" name={name} className="grow" />

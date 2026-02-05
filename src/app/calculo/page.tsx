@@ -9,8 +9,8 @@ export default async function Page(props: {
 }) {
   const searchParams = await props.searchParams
   return (
-    <div className="container p-4 md:p-8">
-      <div className="flex items-center gap-2 mb-4">
+    <div className="container mx-auto p-4 md:p-8">
+      <div className="mb-4 flex items-center gap-2">
         <Link
           href="/"
           className={cn(

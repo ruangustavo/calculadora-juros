@@ -63,11 +63,11 @@ export function FormCompoundInterestSimulator() {
           className="space-y-8"
           onSubmit={handleSubmit(handleSimulateCompoundInterest)}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="initial_value">Valor inicial</Label>
               <div className="flex">
-                <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-foreground/20 bg-zinc-50 text-muted-foreground sm:text-sm select-none">
+                <span className="inline-flex select-none items-center rounded-l-md border border-foreground/20 border-r-0 bg-muted/80 px-3 text-muted-foreground sm:text-sm">
                   R$
                 </span>
                 <BrazilianCurrencyInput control={control} name="initialValue" />
@@ -76,7 +76,7 @@ export function FormCompoundInterestSimulator() {
             <div className="space-y-2">
               <Label htmlFor="monthly_value">Valor mensal</Label>
               <div className="flex">
-                <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-foreground/20 bg-zinc-50 text-muted-foreground sm:text-sm select-none">
+                <span className="inline-flex select-none items-center rounded-l-md border border-foreground/20 border-r-0 bg-muted/80 px-3 text-muted-foreground sm:text-sm">
                   R$
                 </span>
                 <BrazilianCurrencyInput control={control} name="monthlyValue" />
