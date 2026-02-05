@@ -8,6 +8,7 @@ export default async function Page(props: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const searchParams = await props.searchParams
+
   return (
     <div className="container mx-auto p-4 md:p-8">
       <div className="mb-4 flex items-center gap-2">
@@ -19,8 +20,8 @@ export default async function Page(props: {
             }),
           )}
         >
-          <ArrowLeft className="size-4" />
-          <span className="ml-2">Voltar</span>
+          <ArrowLeft />
+          <span>Voltar</span>
         </Link>
       </div>
 

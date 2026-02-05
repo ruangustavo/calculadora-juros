@@ -1,7 +1,7 @@
 import React, { type ForwardedRef } from 'react'
 import { type Control, Controller } from 'react-hook-form'
 import { NumericFormat, type NumericFormatProps } from 'react-number-format'
-import { Input } from '@/components/ui/input'
+import { InputGroupInput } from '@/components/ui/input-group'
 import type { CompoundInterestSimulatorForm } from '@/types'
 
 interface BrazilianCurrencyInputProps
@@ -21,7 +21,7 @@ const BrazilianCurrencyInput = React.forwardRef(
         name={name}
         render={({ field: { onChange, value } }) => (
           <NumericFormat
-            customInput={Input}
+            customInput={InputGroupInput}
             thousandSeparator="."
             decimalSeparator=","
             decimalScale={2}
@@ -30,7 +30,6 @@ const BrazilianCurrencyInput = React.forwardRef(
             value={value}
             onValueChange={(values) => onChange(values.value)}
             getInputRef={ref}
-            className="rounded-l-none"
             {...props}
           />
         )}

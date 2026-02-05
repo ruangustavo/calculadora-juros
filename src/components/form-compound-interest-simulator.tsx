@@ -11,15 +11,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { cn } from '@/lib/utils'
 import type { CompoundInterestSimulatorForm } from '@/types'
 import BrazilianCurrencyInput from './brazilian-currency-input'
 import { Button } from './ui/button'
+import { ButtonGroup } from './ui/button-group'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
+import { InputGroup, InputGroupAddon, InputGroupText } from './ui/input-group'
 
 export function FormCompoundInterestSimulator() {
   const router = useRouter()
 
-  const { handleSubmit, register, control } =
+  const { handleSubmit, register, control, watch } =
     useForm<CompoundInterestSimulatorForm>({
       defaultValues: {
         compoundInterest: 8,
@@ -30,6 +33,8 @@ export function FormCompoundInterestSimulator() {
         timespanPeriod: 'years',
       },
     })
+
+  const timespanPeriod = watch('timespanPeriod')
 
   const handleSimulateCompoundInterest = ({
     compoundInterest,
@@ -66,30 +71,26 @@ export function FormCompoundInterestSimulator() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="initial_value">Valor inicial</Label>
-              <div className="flex">
-                <span className="inline-flex select-none items-center rounded-l-md border border-foreground/20 border-r-0 bg-muted/80 px-3 text-muted-foreground sm:text-sm">
-                  R$
-                </span>
+              <InputGroup>
+                <InputGroupAddon align="inline-start">
+                  <InputGroupText>R$</InputGroupText>
+                </InputGroupAddon>
                 <BrazilianCurrencyInput control={control} name="initialValue" />
-              </div>
+              </InputGroup>
             </div>
             <div className="space-y-2">
               <Label htmlFor="monthly_value">Valor mensal</Label>
-              <div className="flex">
-                <span className="inline-flex select-none items-center rounded-l-md border border-foreground/20 border-r-0 bg-muted/80 px-3 text-muted-foreground sm:text-sm">
-                  R$
-                </span>
+              <InputGroup>
+                <InputGroupAddon align="inline-start">
+                  <InputGroupText>R$</InputGroupText>
+                </InputGroupAddon>
                 <BrazilianCurrencyInput control={control} name="monthlyValue" />
-              </div>
+              </InputGroup>
             </div>
             <div className="space-y-2">
               <Label htmlFor="compound_interest">Taxa de juros</Label>
-              <div className="flex">
-                <Input
-                  type="number"
-                  className="rounded-r-none"
-                  {...register('compoundInterest')}
-                />
+              <ButtonGroup>
+                <Input type="number" {...register('compoundInterest')} />
                 <Controller
                   name="interestPeriod"
                   control={control}
@@ -98,7 +99,7 @@ export function FormCompoundInterestSimulator() {
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger className="w-[100px] rounded-l-none">
+                      <SelectTrigger className="w-[100px]">
                         <SelectValue placeholder="Período" />
                       </SelectTrigger>
                       <SelectContent>
@@ -108,16 +109,12 @@ export function FormCompoundInterestSimulator() {
                     </Select>
                   )}
                 />
-              </div>
+              </ButtonGroup>
             </div>
             <div className="space-y-2">
               <Label htmlFor="timespan">Período</Label>
-              <div className="flex">
-                <Input
-                  type="number"
-                  className="rounded-r-none"
-                  {...register('timespan')}
-                />
+              <ButtonGroup>
+                <Input type="number" {...register('timespan')} />
                 <Controller
                   name="timespanPeriod"
                   control={control}
@@ -126,7 +123,13 @@ export function FormCompoundInterestSimulator() {
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger className="w-[100px] rounded-l-none">
+                      <SelectTrigger
+                        className={cn(
+                          timespanPeriod === 'years'
+                            ? 'w-[100px]'
+                            : 'w-[110px]',
+                        )}
+                      >
                         <SelectValue placeholder="Período" />
                       </SelectTrigger>
                       <SelectContent>
@@ -136,7 +139,7 @@ export function FormCompoundInterestSimulator() {
                     </Select>
                   )}
                 />
-              </div>
+              </ButtonGroup>
             </div>
           </div>
 
