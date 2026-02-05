@@ -24,7 +24,6 @@ export default async function Page(props: {
           <span>Voltar</span>
         </Link>
       </div>
-
       <InterestResult searchParams={searchParams} />
     </div>
   )

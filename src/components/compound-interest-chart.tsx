@@ -115,6 +115,7 @@ export function CompoundInterestChart({
         </p>
       </CardHeader>
       <CardContent>
+        {' '}
         <ChartContainer config={chartConfig} className="h-[400px] w-full">
           <LineChart
             accessibilityLayer
