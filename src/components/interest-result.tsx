@@ -83,14 +83,14 @@ export function InterestResult({
   const results = calculateInterest()
 
   return (
-    <Card>
+    <Card className="gap-0">
       <CardHeader>
         <CardTitle className="text-base">Resultados da Simulação</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-          <Card>
-            <CardHeader className="pb-2">
+          <Card className="gap-0">
+            <CardHeader>
               <CardTitle className="font-medium text-sm">
                 Valor total final
               </CardTitle>
@@ -104,8 +104,8 @@ export function InterestResult({
               </p>
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader className="pb-2">
+          <Card className="gap-0">
+            <CardHeader>
               <CardTitle className="font-medium text-sm">
                 Valor total investido
               </CardTitle>
@@ -119,14 +119,14 @@ export function InterestResult({
               </p>
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader className="pb-2">
+          <Card className="gap-0">
+            <CardHeader>
               <CardTitle className="font-medium text-sm">
                 Total em juros
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="font-bold text-2xl text-emerald-500">
+              <p className="font-bold text-2xl text-lime-300">
                 {Intl.NumberFormat('pt-BR', {
                   style: 'currency',
                   currency: 'BRL',
@@ -145,53 +145,63 @@ export function InterestResult({
             <CompoundInterestChart chartData={results.results} />
           </TabsContent>
           <TabsContent value="table">
-            <ScrollArea className="h-[400px] w-full rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[100px]">Mês</TableHead>
-                    <TableHead>Saldo</TableHead>
-                    <TableHead>Juros</TableHead>
-                    <TableHead>Total Investido</TableHead>
-                    <TableHead>Juros Acumulados</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {results.results.map((result) => (
-                    <TableRow key={result.month}>
-                      <TableCell className="font-medium">
-                        {result.month}
-                      </TableCell>
-                      <TableCell>
-                        {Intl.NumberFormat('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        }).format(result.balance)}
-                      </TableCell>
-                      <TableCell>
-                        {Intl.NumberFormat('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        }).format(result.monthlyInterest)}
-                      </TableCell>
-                      <TableCell>
-                        {Intl.NumberFormat('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        }).format(result.totalContributions)}
-                      </TableCell>
-                      <TableCell>
-                        {Intl.NumberFormat('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        }).format(result.totalInterest)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Detalhamento Mensal</CardTitle>
+                <p className="text-muted-foreground text-sm">
+                  Evolução mês a mês do seu investimento
+                </p>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[400px] w-full rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-muted/50">
+                        <TableHead className="h-12 w-[100px]">Mês</TableHead>
+                        <TableHead className="h-12">Saldo</TableHead>
+                        <TableHead className="h-12">Juros</TableHead>
+                        <TableHead className="h-12">Total Investido</TableHead>
+                        <TableHead className="h-12">Juros Acumulados</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {results.results.map((result) => (
+                        <TableRow key={result.month}>
+                          <TableCell className="h-12 font-medium">
+                            {result.month}
+                          </TableCell>
+                          <TableCell className="h-12 font-medium text-lime-300">
+                            {Intl.NumberFormat('pt-BR', {
+                              style: 'currency',
+                              currency: 'BRL',
+                            }).format(result.balance)}
+                          </TableCell>
+                          <TableCell className="h-12">
+                            {Intl.NumberFormat('pt-BR', {
+                              style: 'currency',
+                              currency: 'BRL',
+                            }).format(result.monthlyInterest)}
+                          </TableCell>
+                          <TableCell className="h-12">
+                            {Intl.NumberFormat('pt-BR', {
+                              style: 'currency',
+                              currency: 'BRL',
+                            }).format(result.totalContributions)}
+                          </TableCell>
+                          <TableCell className="h-12">
+                            {Intl.NumberFormat('pt-BR', {
+                              style: 'currency',
+                              currency: 'BRL',
+                            }).format(result.totalInterest)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </CardContent>

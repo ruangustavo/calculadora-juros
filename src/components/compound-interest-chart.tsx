@@ -1,24 +1,91 @@
 'use client'
 
-import { CartesianGrid, Line, LineChart, XAxis } from 'recharts'
+import { formatDuration, intervalToDuration } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   type ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
-  ChartTooltipContent,
 } from '@/components/ui/chart'
 import type { CompoundInterestMonth } from '@/types'
 
+const formatCurrency = (value: number | string) => {
+  const numValue = typeof value === 'string' ? Number.parseFloat(value) : value
+  return Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(numValue)
+}
+
+const formatMonthDuration = (months: number) => {
+  const duration = intervalToDuration({
+    start: new Date(2000, 0, 1),
+    end: new Date(2000, months, 1),
+  })
+
+  return formatDuration(duration, {
+    format: ['years', 'months'],
+    locale: ptBR,
+  })
+}
+
+interface TooltipPayload {
+  value: number
+  name: string
+  color: string
+  dataKey: string
+  payload: {
+    month: number
+    balance: number
+    balanceWithoutInterest: number
+  }
+}
+
+interface CustomTooltipProps {
+  active?: boolean
+  payload?: TooltipPayload[]
+}
+
+const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
+  if (!active || !payload || payload.length === 0) return null
+
+  const month = payload[0].payload.month
+  const duration = formatMonthDuration(month)
+
+  return (
+    <div className="rounded-lg border bg-background p-2 shadow-sm">
+      <div className="mb-2 font-medium text-sm">
+        Mês {month} {duration && `(depois de ${duration})`}
+      </div>
+      <div className="space-y-1">
+        {payload.map((entry) => (
+          <div key={entry.dataKey} className="flex items-center gap-2 text-sm">
+            <div
+              className="size-3 rounded-xs"
+              style={{ backgroundColor: entry.color }}
+            />
+            <span className="text-muted-foreground">{entry.name}:</span>
+            <span className="font-medium">{formatCurrency(entry.value)}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const chartConfig = {
   balance: {
-    label: 'Rendimento',
+    label: 'Com juros',
     color: 'var(--color-chart-2)',
   },
   balanceWithoutInterest: {
-    label: 'Saldo sem juros',
-    color: 'var(--color-chart-1)',
+    label: 'Sem juros',
+    color: 'var(--color-muted-foreground)',
   },
 } satisfies ChartConfig
 
@@ -29,8 +96,24 @@ interface CompoundInterestChartProps {
 export function CompoundInterestChart({
   chartData,
 }: CompoundInterestChartProps) {
+  const formatYAxis = (value: number) => {
+    if (value >= 1000000) {
+      return `R$ ${(value / 1000000).toFixed(1)}M`
+    }
+    if (value >= 1000) {
+      return `R$ ${(value / 1000).toFixed(0)}K`
+    }
+    return `R$ ${value}`
+  }
+
   return (
     <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Evolução do Investimento</CardTitle>
+        <p className="text-muted-foreground text-sm">
+          Comparação entre investimento com e sem juros compostos
+        </p>
+      </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[400px] w-full">
           <LineChart
@@ -44,9 +127,16 @@ export function CompoundInterestChart({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              name="Mês"
+              label={{ value: 'Mês', position: 'insideBottom', offset: -5 }}
             />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={formatYAxis}
+            />
+            <ChartTooltip cursor={false} content={<CustomTooltip />} />
+            <ChartLegend content={<ChartLegendContent />} />
             <Line
               dataKey="balance"
               type="monotone"
@@ -60,6 +150,7 @@ export function CompoundInterestChart({
               type="monotone"
               stroke="var(--color-balanceWithoutInterest)"
               strokeWidth={2}
+              strokeDasharray="5 5"
               dot={false}
               name="Saldo sem juros"
             />

@@ -35,6 +35,8 @@ export function FormCompoundInterestSimulator() {
     })
 
   const timespanPeriod = watch('timespanPeriod')
+  const initialValue = watch('initialValue')
+  const monthlyValue = watch('monthlyValue')
 
   const handleSimulateCompoundInterest = ({
     compoundInterest,
@@ -143,7 +145,12 @@ export function FormCompoundInterestSimulator() {
             </div>
           </div>
 
-          <Button type="submit">Calcular</Button>
+          <Button
+            type="submit"
+            disabled={!initialValue && !monthlyValue}
+          >
+            Calcular
+          </Button>
         </form>
       </CardContent>
     </Card>
