@@ -4,11 +4,12 @@ import { cn } from '@/lib/utils'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
-export default function Page({
-  searchParams,
-}: {
-  searchParams: Record<string, string | string[] | undefined>
-}) {
+export default async function Page(
+  props: {
+    searchParams: Promise<Record<string, string | string[] | undefined>>
+  }
+) {
+  const searchParams = await props.searchParams;
   return (
     <div className="container p-4 md:p-8">
       <div className="flex items-center gap-2 mb-4">
