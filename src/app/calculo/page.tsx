@@ -1,8 +1,30 @@
 import { ArrowLeft } from 'lucide-react'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { InterestResult } from '@/components/interest-result'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+
+export const metadata: Metadata = {
+  title: 'Resultado do Cálculo | Simulador de Juros Compostos',
+  description:
+    'Veja o resultado detalhado do cálculo de juros compostos do seu investimento',
+  alternates: {
+    canonical: 'https://juros.ruangustavo.com/calculo',
+  },
+  openGraph: {
+    title: 'Resultado do Cálculo | Simulador de Juros Compostos',
+    description:
+      'Veja o resultado detalhado do cálculo de juros compostos do seu investimento',
+    url: 'https://juros.ruangustavo.com/calculo',
+    type: 'website',
+    locale: 'pt_BR',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+}
 
 export default async function Page(props: {
   searchParams: Promise<Record<string, string | string[] | undefined>>

@@ -8,9 +8,25 @@ import { cn } from '@/lib/utils'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://juros.ruangustavo.com'),
   title: 'Calculadora de juros compostos',
   description:
     'Utilize esta calculadora para simular cálculos de juros compostos em investimentos',
+  openGraph: {
+    title: 'Calculadora de Juros Compostos',
+    description:
+      'Utilize esta calculadora para simular cálculos de juros compostos em investimentos',
+    url: 'https://juros.ruangustavo.com',
+    siteName: 'Calculadora de Juros Compostos',
+    locale: 'pt_BR',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Calculadora de Juros Compostos',
+    description:
+      'Utilize esta calculadora para simular cálculos de juros compostos em investimentos',
+  },
 }
 
 export default function RootLayout({

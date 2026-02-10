@@ -13,6 +13,23 @@ export const metadata: Metadata = {
   title: 'Simulador de Juros Compostos | Entenda juros e como calcular',
   description:
     'Aprenda o que são juros, como calcular juros simples e juros compostos, e por que a taxa e o tempo mudam o resultado. Use o simulador para ver o efeito dos juros compostos no seu investimento.',
+  alternates: {
+    canonical: 'https://juros.ruangustavo.com',
+  },
+  openGraph: {
+    title: 'Simulador de Juros Compostos | Entenda juros e como calcular',
+    description:
+      'Aprenda o que são juros, como calcular juros simples e juros compostos, e por que a taxa e o tempo mudam o resultado.',
+    url: 'https://juros.ruangustavo.com',
+    type: 'website',
+    locale: 'pt_BR',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Simulador de Juros Compostos | Entenda juros e como calcular',
+    description:
+      'Aprenda o que são juros, como calcular juros simples e juros compostos.',
+  },
   robots: {
     index: true,
     follow: true,
