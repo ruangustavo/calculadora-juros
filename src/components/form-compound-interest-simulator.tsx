@@ -161,9 +161,11 @@ export function FormCompoundInterestSimulator() {
           </div>
           <Accordion type="single" collapsible>
             <AccordionItem value="customization">
-              <AccordionTrigger>Personalização</AccordionTrigger>
+              <AccordionTrigger className="py-1">
+                Personalização
+              </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-2">
+                <div className="space-y-2 pt-2">
                   <Label htmlFor="contribution_increase">
                     Aumento anual dos aportes
                   </Label>
