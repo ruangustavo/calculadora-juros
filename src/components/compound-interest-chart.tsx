@@ -1,8 +1,13 @@
 'use client'
 
-import { formatDuration, intervalToDuration } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ReferenceLine,
+  XAxis,
+  YAxis,
+} from 'recharts'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -22,16 +27,23 @@ const formatCurrency = (value: number | string) => {
   }).format(numValue)
 }
 
-const formatMonthDuration = (months: number) => {
-  const duration = intervalToDuration({
-    start: new Date(2000, 0, 1),
-    end: new Date(2000, months, 1),
-  })
+const formatMonthLabel = (month: number) => {
+  const years = Math.floor(month / 12)
+  const months = month % 12
 
-  return formatDuration(duration, {
-    format: ['years', 'months'],
-    locale: ptBR,
-  })
+  const formatYears = (y: number) => `${y} ${y === 1 ? 'ano' : 'anos'}`
+  const formatMonths = (m: number) => `${m} ${m === 1 ? 'mês' : 'meses'}`
+
+  let durationLabel: string
+  if (years > 0 && months > 0) {
+    durationLabel = `${formatYears(years)} e ${formatMonths(months)}`
+  } else if (years > 0) {
+    durationLabel = formatYears(years)
+  } else {
+    durationLabel = formatMonths(months)
+  }
+
+  return `Mês ${month} (${durationLabel})`
 }
 
 interface TooltipPayload {
@@ -42,55 +54,129 @@ interface TooltipPayload {
   payload: {
     month: number
     balance: number
-    balanceWithoutInterest: number
+    totalContributions: number
+    totalInterest: number
+    monthlyContribution: number
+    contributionIncreaseRate: number
   }
 }
 
 interface CustomTooltipProps {
   active?: boolean
   payload?: TooltipPayload[]
+  isYearlyView?: boolean
 }
 
-const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
+const CustomTooltip = ({
+  active,
+  payload,
+  isYearlyView,
+}: CustomTooltipProps) => {
   if (!active || !payload || payload.length === 0) return null
 
-  const month = payload[0].payload.month
-  const duration = formatMonthDuration(month)
+  const data = payload[0].payload
+  const period = data.month
+  const balance = data.balance
+  const totalContributions = data.totalContributions
+  const totalInterest = data.totalInterest
+  const monthlyContribution = data.monthlyContribution
+  const hasPercentageIncrease = data.contributionIncreaseRate > 0
 
   return (
     <div className="rounded-lg border bg-background p-2 shadow-sm">
       <div className="mb-2 font-medium text-sm">
-        Mês {month} {duration && `(depois de ${duration})`}
+        {isYearlyView ? `Ano ${period}` : formatMonthLabel(period)}
       </div>
       <div className="space-y-1">
-        {payload.map((entry) => (
-          <div key={entry.dataKey} className="flex items-center gap-2 text-sm">
+        <div className="flex items-center justify-between gap-4 text-sm">
+          <span className="text-muted-foreground">Valor total:</span>
+          <span className="font-medium">{formatCurrency(balance)}</span>
+        </div>
+        <div className="flex items-center justify-between gap-4 text-sm">
+          {hasPercentageIncrease && (
+            <>
+              <span className="text-muted-foreground">Aporte mensal:</span>
+              <span className="font-medium">
+                {formatCurrency(monthlyContribution)}
+              </span>
+            </>
+          )}
+        </div>
+        <div className="my-1.5 border-t border-dashed" />
+        <div className="flex items-center justify-between gap-4 text-sm">
+          <div className="flex items-center gap-2">
             <div
-              className="size-3 rounded-xs"
-              style={{ backgroundColor: entry.color }}
+              className="h-2.5 w-2.5 rounded-sm"
+              style={{ backgroundColor: chartConfig.totalContributions.color }}
             />
-            <span className="text-muted-foreground">{entry.name}:</span>
-            <span className="font-medium">{formatCurrency(entry.value)}</span>
+            <span className="text-muted-foreground">
+              {chartConfig.totalContributions.label}:
+            </span>
           </div>
-        ))}
+          <span className="font-medium">
+            {formatCurrency(totalContributions)}
+          </span>
+        </div>
+        <div className="flex items-center justify-between gap-4 text-sm">
+          <div className="flex items-center gap-2">
+            <div
+              className="h-2.5 w-2.5 rounded-sm"
+              style={{ backgroundColor: chartConfig.totalInterest.color }}
+            />
+            <span className="text-muted-foreground">
+              {chartConfig.totalInterest.label}:
+            </span>
+          </div>
+          <span className="font-medium">{formatCurrency(totalInterest)}</span>
+        </div>
       </div>
     </div>
   )
 }
 
 const chartConfig = {
-  balance: {
-    label: 'Com juros',
-    color: 'var(--color-chart-2)',
+  totalContributions: {
+    label: 'Investido',
+    color: 'hsl(142 76% 36%)',
   },
-  balanceWithoutInterest: {
-    label: 'Sem juros',
-    color: 'var(--color-muted-foreground)',
+  totalInterest: {
+    label: 'Juros',
+    color: 'hsl(142 69% 58%)',
   },
 } satisfies ChartConfig
 
 interface CompoundInterestChartProps {
   chartData: CompoundInterestMonth[]
+}
+
+const aggregateByYear = (data: CompoundInterestMonth[]) => {
+  const yearlyData: CompoundInterestMonth[] = []
+  const yearsMap = new Map<number, CompoundInterestMonth[]>()
+
+  // Group data by year
+  data.forEach((item) => {
+    const year = Math.ceil(item.month / 12)
+    if (!yearsMap.has(year)) {
+      yearsMap.set(year, [])
+    }
+    const yearData = yearsMap.get(year)
+    if (yearData) {
+      yearData.push(item)
+    }
+  })
+
+  // Take the last month of each year
+  yearsMap.forEach((months) => {
+    const lastMonth = months[months.length - 1]
+    if (lastMonth) {
+      yearlyData.push({
+        ...lastMonth,
+        month: Math.ceil(lastMonth.month / 12),
+      })
+    }
+  })
+
+  return yearlyData
 }
 
 export function CompoundInterestChart({
@@ -106,20 +192,26 @@ export function CompoundInterestChart({
     return `R$ ${value}`
   }
 
+  const shouldAggregateByYear = chartData.length > 240
+  const displayData = shouldAggregateByYear
+    ? aggregateByYear(chartData)
+    : chartData
+  const increaseMonths = displayData.filter((item) => item.increaseApplied)
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-base">Evolução do Investimento</CardTitle>
         <p className="text-muted-foreground text-sm">
-          Comparação entre investimento com e sem juros compostos
+          Crescimento {shouldAggregateByYear ? 'anual' : 'mensal'} do portfólio
+          com separação entre Investido e juros
         </p>
       </CardHeader>
       <CardContent>
-        {' '}
         <ChartContainer config={chartConfig} className="h-[400px] w-full">
-          <LineChart
+          <BarChart
             accessibilityLayer
-            data={chartData}
+            data={displayData}
             margin={{ left: 12, right: 12 }}
           >
             <CartesianGrid vertical={false} />
@@ -128,7 +220,11 @@ export function CompoundInterestChart({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              label={{ value: 'Mês', position: 'insideBottom', offset: -5 }}
+              label={{
+                value: shouldAggregateByYear ? 'Ano' : 'Mês',
+                position: 'insideBottom',
+                offset: -5,
+              }}
             />
             <YAxis
               tickLine={false}
@@ -136,26 +232,35 @@ export function CompoundInterestChart({
               tickMargin={8}
               tickFormatter={formatYAxis}
             />
-            <ChartTooltip cursor={false} content={<CustomTooltip />} />
+            <ChartTooltip
+              cursor={{ fill: 'hsl(var(--muted) / 0.3)' }}
+              content={<CustomTooltip isYearlyView={shouldAggregateByYear} />}
+            />
             <ChartLegend content={<ChartLegendContent />} />
-            <Line
-              dataKey="balance"
-              type="monotone"
-              stroke="var(--color-balance)"
-              strokeWidth={2}
-              dot={false}
-              name="Saldo com juros"
+            {increaseMonths.map((item) => (
+              <ReferenceLine
+                key={`increase-${item.month}`}
+                x={item.month}
+                stroke="hsl(var(--muted-foreground))"
+                strokeDasharray="2 4"
+                ifOverflow="extendDomain"
+              />
+            ))}
+            <Bar
+              dataKey="totalContributions"
+              stackId="a"
+              fill="var(--color-totalContributions)"
+              radius={[0, 0, 0, 0]}
+              isAnimationActive={false}
             />
-            <Line
-              dataKey="balanceWithoutInterest"
-              type="monotone"
-              stroke="var(--color-balanceWithoutInterest)"
-              strokeWidth={2}
-              strokeDasharray="5 5"
-              dot={false}
-              name="Saldo sem juros"
+            <Bar
+              dataKey="totalInterest"
+              stackId="a"
+              fill="var(--color-totalInterest)"
+              radius={[4, 4, 0, 0]}
+              isAnimationActive={false}
             />
-          </LineChart>
+          </BarChart>
         </ChartContainer>
       </CardContent>
     </Card>

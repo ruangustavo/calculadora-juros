@@ -27,6 +27,7 @@ export function InterestResult({
     interestPeriod: z.enum(['yearly', 'monthly']),
     timespan: z.coerce.number(),
     timespanPeriod: z.enum(['years', 'months']),
+    contributionIncrease: z.coerce.number().optional().default(0),
   })
 
   const {
@@ -36,6 +37,7 @@ export function InterestResult({
     interestPeriod,
     timespan,
     timespanPeriod,
+    contributionIncrease,
   } = searchParamsSchema.parse(searchParams)
 
   const calculateInterest = () => {
@@ -45,6 +47,7 @@ export function InterestResult({
       interestPeriod === 'yearly'
         ? compoundInterest / 12 / 100
         : compoundInterest / 100
+    const contributionIncreaseRate = contributionIncrease / 100
 
     let balance = initialValue
     let totalContributions = initialValue
@@ -52,11 +55,18 @@ export function InterestResult({
     const results: CompoundInterestMonth[] = []
 
     for (let month = 1; month <= periods; month++) {
+      const yearlyContributionMultiplier = Math.floor((month - 1) / 12)
+      const monthlyContribution =
+        monthlyValue *
+        (1 + contributionIncreaseRate) ** yearlyContributionMultiplier
+      const increaseApplied =
+        contributionIncreaseRate > 0 && month > 1 && (month - 1) % 12 === 0
+
       if (month !== 1) {
-        balance += monthlyValue
+        balance += monthlyContribution
       }
 
-      totalContributions += monthlyValue
+      totalContributions += monthlyContribution
 
       const monthlyInterest = balance * rate
       balance += monthlyInterest
@@ -65,6 +75,9 @@ export function InterestResult({
       results.push({
         month,
         monthlyInterest,
+        monthlyContribution,
+        increaseApplied,
+        contributionIncreaseRate,
         balance,
         balanceWithoutInterest: balance - totalInterest,
         totalContributions,

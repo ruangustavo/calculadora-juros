@@ -3,6 +3,9 @@ export type CompoundInterestMonth = {
   balance: number
   balanceWithoutInterest: number
   monthlyInterest: number
+  monthlyContribution: number
+  increaseApplied: boolean
+  contributionIncreaseRate: number
   totalContributions: number
   totalInterest: number
 }
@@ -25,4 +28,5 @@ export type CompoundInterestSimulatorForm = {
   interestPeriod: InterestPeriod
   timespan: number
   timespanPeriod: TimespanPeriod
+  contributionIncrease: number
 }

@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { Controller, useForm } from 'react-hook-form'
+import { NumericFormat } from 'react-number-format'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -14,15 +15,26 @@ import {
 import { cn } from '@/lib/utils'
 import type { CompoundInterestSimulatorForm } from '@/types'
 import BrazilianCurrencyInput from './brazilian-currency-input'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from './ui/accordion'
 import { Button } from './ui/button'
 import { ButtonGroup } from './ui/button-group'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { InputGroup, InputGroupAddon, InputGroupText } from './ui/input-group'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from './ui/input-group'
 
 export function FormCompoundInterestSimulator() {
   const router = useRouter()
 
-  const { handleSubmit, register, control, watch } =
+  const { handleSubmit, register, control, watch, reset } =
     useForm<CompoundInterestSimulatorForm>({
       defaultValues: {
         compoundInterest: 8,
@@ -31,6 +43,7 @@ export function FormCompoundInterestSimulator() {
         timespan: 1,
         interestPeriod: 'yearly',
         timespanPeriod: 'years',
+        contributionIncrease: 0,
       },
     })
 
@@ -45,6 +58,7 @@ export function FormCompoundInterestSimulator() {
     interestPeriod,
     timespan,
     timespanPeriod,
+    contributionIncrease,
   }: CompoundInterestSimulatorForm) => {
     const params = [
       `initialValue=${initialValue}`,
@@ -53,6 +67,7 @@ export function FormCompoundInterestSimulator() {
       `interestPeriod=${interestPeriod}`,
       `timespan=${timespan}`,
       `timespanPeriod=${timespanPeriod}`,
+      `contributionIncrease=${contributionIncrease}`,
     ].join('&')
 
     router.push(`calculo?${params}`)
@@ -144,13 +159,49 @@ export function FormCompoundInterestSimulator() {
               </ButtonGroup>
             </div>
           </div>
-
-          <Button
-            type="submit"
-            disabled={!initialValue && !monthlyValue}
-          >
-            Calcular
-          </Button>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="customization">
+              <AccordionTrigger>Personalização</AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  <Label htmlFor="contribution_increase">
+                    Aumento anual dos aportes
+                  </Label>
+                  <InputGroup>
+                    <Controller
+                      name="contributionIncrease"
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <NumericFormat
+                          id="contribution_increase"
+                          customInput={InputGroupInput}
+                          thousandSeparator="."
+                          decimalSeparator=","
+                          decimalScale={2}
+                          fixedDecimalScale
+                          allowNegative={false}
+                          value={value}
+                          onValueChange={(values) => onChange(values.value)}
+                          placeholder="0,00"
+                        />
+                      )}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupText>%</InputGroupText>
+                    </InputGroupAddon>
+                  </InputGroup>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          <div className="flex gap-2">
+            <Button type="button" variant="outline" onClick={() => reset()}>
+              Limpar
+            </Button>
+            <Button type="submit" disabled={!initialValue && !monthlyValue}>
+              Calcular
+            </Button>
+          </div>
         </form>
       </CardContent>
     </Card>

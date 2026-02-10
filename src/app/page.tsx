@@ -11,7 +11,7 @@ export default function Home() {
             Simulador de Juros Compostos
           </h1>
         </div>
-        <p className="ml-8 text-sm text-muted-foreground">
+        <p className="ml-8 text-muted-foreground text-sm">
           Calcule o crescimento do seu investimento com juros compostos
         </p>
       </div>
