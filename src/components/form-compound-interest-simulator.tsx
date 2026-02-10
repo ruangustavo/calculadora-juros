@@ -164,7 +164,7 @@ export function FormCompoundInterestSimulator() {
               <AccordionTrigger className="py-1">
                 Personalização
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="pb-0">
                 <div className="space-y-2 pt-2">
                   <Label htmlFor="contribution_increase">
                     Aumento anual dos aportes
@@ -192,6 +192,11 @@ export function FormCompoundInterestSimulator() {
                       <InputGroupText>%</InputGroupText>
                     </InputGroupAddon>
                   </InputGroup>
+                  <p className="text-muted-foreground text-sm">
+                    O valor mensal será aumentado anualmente pela porcentagem
+                    indicada. Ex: com 10%, um aporte de R$ 1.000 passará para R$
+                    1.100 no segundo ano
+                  </p>
                 </div>
               </AccordionContent>
             </AccordionItem>
