@@ -1,6 +1,7 @@
 import { ArrowLeft } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { InterestResult } from '@/components/interest-result'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -26,11 +27,7 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function Page(props: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>
-}) {
-  const searchParams = await props.searchParams
-
+export default function Page() {
   return (
     <div className="container mx-auto p-4 md:p-8">
       <div className="mb-4 flex items-center gap-2">
@@ -46,7 +43,9 @@ export default async function Page(props: {
           <span>Voltar</span>
         </Link>
       </div>
-      <InterestResult searchParams={searchParams} />
+      <Suspense fallback={null}>
+        <InterestResult />
+      </Suspense>
     </div>
   )
 }

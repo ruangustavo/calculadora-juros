@@ -1,5 +1,6 @@
 'use client'
 
+import { useSearchParams } from 'next/navigation'
 import { z } from 'zod'
 import {
   Table,
@@ -15,11 +16,8 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { ScrollArea, ScrollBar } from './ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
 
-export function InterestResult({
-  searchParams,
-}: {
-  searchParams: Record<string, string | string[] | undefined>
-}) {
+export function InterestResult() {
+  const searchParams = useSearchParams()
   const searchParamsSchema = z.object({
     initialValue: z.coerce.number(),
     monthlyValue: z.coerce.number(),
@@ -38,7 +36,7 @@ export function InterestResult({
     timespan,
     timespanPeriod,
     contributionIncrease,
-  } = searchParamsSchema.parse(searchParams)
+  } = searchParamsSchema.parse(Object.fromEntries(searchParams))
 
   const calculateInterest = () => {
     const periods = timespanPeriod === 'years' ? timespan * 12 : timespan

@@ -60,17 +60,17 @@ export function FormCompoundInterestSimulator() {
     timespanPeriod,
     contributionIncrease,
   }: CompoundInterestSimulatorForm) => {
-    const params = [
-      `initialValue=${initialValue}`,
-      `monthlyValue=${monthlyValue}`,
-      `compoundInterest=${compoundInterest}`,
-      `interestPeriod=${interestPeriod}`,
-      `timespan=${timespan}`,
-      `timespanPeriod=${timespanPeriod}`,
-      `contributionIncrease=${contributionIncrease}`,
-    ].join('&')
+    const params = new URLSearchParams({
+      initialValue: String(initialValue),
+      monthlyValue: String(monthlyValue),
+      compoundInterest: String(compoundInterest),
+      interestPeriod,
+      timespan: String(timespan),
+      timespanPeriod,
+      contributionIncrease: String(contributionIncrease),
+    })
 
-    router.push(`calculo?${params}`)
+    router.push(`/calculo?${params}`)
   }
 
   return (
